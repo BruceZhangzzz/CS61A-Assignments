@@ -13,9 +13,9 @@ def a_plus_abs_b(a, b):
     3
     """
     if b < 0:
-        f = _____
+        f = sub
     else:
-        f = _____
+        f = add
     return f(a, b)
 
 def a_plus_abs_b_syntax_check():
@@ -42,7 +42,7 @@ def two_of_three(i, j, k):
     >>> two_of_three(5, 5, 5)
     50
     """
-    return _____
+    return i*i+j*j+k*k-max(i,j,k)**2
 
 def two_of_three_syntax_check():
     """Check that your two_of_three code consists of nothing but a return statement.
@@ -65,7 +65,13 @@ def largest_factor(n):
     >>> largest_factor(13) # factor is 1 since 13 is prime
     1
     """
-    "*** YOUR CODE HERE ***"
+    
+    candidate=n-1
+    while candidate >=1:
+        if n%candidate==0:
+            return candidate
+        candidate=candidate-1
+        
 
 
 def hailstone(n):
@@ -87,5 +93,59 @@ def hailstone(n):
     >>> b
     1
     """
-    "*** YOUR CODE HERE ***"
+    print(n)
+    length=1
+    while n!=1 :
+        if n%2==0 :
+            n=n//2
+        else :
+            n=3*n+1
+        print(n)
+
+        length=length+1
+    
+    return length
+
+    
+    
+    
+    
+    
+ # 之前写错的版本：
+# length = 1
+# while n != 1:
+#     if n % 2 == 0:
+#         return n / 2
+#     else:
+#         return 3 * n + 1
+# length = length + 1
+# print(int(length))
+
+
+# 第二次修改版本
+# print(n)
+#   length=1
+#    while n!=1 :
+#        if n%2==0 :
+#            n=n/2
+#        else :
+#            n=3*n+1
+#    length=length+1
+    
+#    return length
+
+
+#第三次修改
+#print(n)
+#    length=1
+#   while n!=1 :
+#       if n%2==0 :
+#          n=n/2
+#     else :
+#        n=3*n+1
+#   print(n)
+
+#  length=length+1
+    
+#return length
 

@@ -21,7 +21,25 @@ def roll_dice(num_rolls, dice=six_sided):
     assert type(num_rolls) == int, 'num_rolls must be an integer.'
     assert num_rolls > 0, 'Must roll at least once.'
     # BEGIN PROBLEM 1
-    "*** YOUR CODE HERE ***"
+    total = 0
+    rolled_one = False
+    while num_rolls > 0:
+        outcome = dice()
+        total = total + outcome
+        if outcome  == 1 :
+            rolled_one = True
+        num_rolls = num_rolls - 1
+    if rolled_one :
+        return 1
+    else :
+        return total
+            
+    
+   
+
+
+
+    
     # END PROBLEM 1
 
 
@@ -33,7 +51,19 @@ def boar_brawl(player_score, opponent_score):
 
     """
     # BEGIN PROBLEM 2
-    "*** YOUR CODE HERE ***"
+    tens_digit = (opponent_score // 10)%10
+    ones_digit = player_score % 10
+    if tens_digit != ones_digit :
+        if opponent_score < 10 :
+            score = abs(3*(0-ones_digit))
+        else :
+            score = abs(3*(tens_digit-ones_digit))
+    else  :
+        score = 1
+    return score
+
+
+
     # END PROBLEM 2
 
 
@@ -51,7 +81,15 @@ def take_turn(num_rolls, player_score, opponent_score, dice=six_sided):
     assert num_rolls >= 0, 'Cannot roll a negative number of dice in take_turn.'
     assert num_rolls <= 10, 'Cannot roll more than 10 dice.'
     # BEGIN PROBLEM 3
-    "*** YOUR CODE HERE ***"
+    if num_rolls == 0:
+        return boar_brawl(player_score, opponent_score)
+    else :
+        return roll_dice(num_rolls,dice)
+          
+
+        
+
+    
     # END PROBLEM 3
 
 
@@ -76,13 +114,23 @@ def is_prime(n):
 def num_factors(n):
     """Return the number of factors of N, including 1 and N itself."""
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    number_factor = 0
+    factor = n
+    while factor > 0 :
+        if n % factor == 0 :
+            number_factor = number_factor + 1
+        factor = factor - 1
+    return number_factor
+            
     # END PROBLEM 4
 
 def sus_points(score):
     """Return the new score of a player taking into account the Sus Fuss rule."""
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    if num_factors(score) in (3,4) :
+        while is_prime(score) == False :
+            score = score + 1
+    return score
     # END PROBLEM 4
 
 def sus_update(num_rolls, player_score, opponent_score, dice=six_sided):
@@ -90,7 +138,9 @@ def sus_update(num_rolls, player_score, opponent_score, dice=six_sided):
     PLAYER_SCORE and then rolls NUM_ROLLS DICE, *including* Sus Fuss.
     """
     # BEGIN PROBLEM 4
-    "*** YOUR CODE HERE ***"
+    score = player_score + take_turn(num_rolls, player_score, opponent_score, dice)
+    outcome = sus_points(score)
+    return outcome
     # END PROBLEM 4
 
 
@@ -129,7 +179,20 @@ def play(strategy0, strategy1, update,
     """
     who = 0  # Who is about to take a turn, 0 (first) or 1 (second)
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    while score0 < goal and score1 <  goal : 
+        if who == 0 :
+            num_rolls = strategy0(score0 , score1)
+            score0 = update(num_rolls, score0, score1, dice)
+            who = 1
+        else : 
+            num_rolls = strategy1(score1 , score0)
+            score1 = update(num_rolls, score1, score0, dice)
+            who = 0
+    return score0 , score1
+
+
+
+
     # END PROBLEM 5
     return score0, score1
 
@@ -154,7 +217,9 @@ def always_roll(n):
     """
     assert n >= 0 and n <= 10
     # BEGIN PROBLEM 6
-    "*** YOUR CODE HERE ***"
+    def strategy(score,opponent_score) :
+        return n
+    return strategy
     # END PROBLEM 6
 
 
@@ -185,7 +250,20 @@ def is_always_roll(strategy, goal=GOAL):
     False
     """
     # BEGIN PROBLEM 7
-    "*** YOUR CODE HERE ***"
+    start_value = strategy(0,0)
+    score = 0
+    while score < goal : 
+        opponent_score = 0 
+        while opponent_score < goal :
+            if strategy (score,opponent_score) != start_value :
+                return False
+            opponent_score = opponent_score + 1
+        score = score + 1
+    return True
+
+
+
+
     # END PROBLEM 7
 
 
@@ -201,7 +279,16 @@ def make_averaged(original_function, times_called=1000):
     3.0
     """
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    def average(*arg):
+        count = 0
+        total = 0
+        while count < times_called :
+            total = total + original_function(*arg)
+            count = count + 1
+        return total / times_called
+    return average
+
+
     # END PROBLEM 8
 
 
@@ -214,7 +301,16 @@ def max_scoring_num_rolls(dice=six_sided, times_called=1000):
     1
     """
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    best_num_rolls = 1
+    best_average_score = 0
+    for num_rolls in range(1,11) :
+        current_average = make_averaged(roll_dice,times_called)(num_rolls,dice)
+        if current_average > best_average_score :
+            best_average_score = current_average
+            best_num_rolls = num_rolls
+    return best_num_rolls
+
+
     # END PROBLEM 9
 
 
@@ -259,14 +355,29 @@ def boar_strategy(score, opponent_score, threshold=11, num_rolls=6):
     points, and returns NUM_ROLLS otherwise. Ignore score and Sus Fuss.
     """
     # BEGIN PROBLEM 10
-    return num_rolls  # Remove this line once implemented.
+    tens_digit = (opponent_score // 10)%10
+    ones_digit = score % 10
+    if tens_digit != ones_digit :
+        if opponent_score < 10 :
+            score = abs(3*(0-ones_digit))
+        else :
+            score = abs(3*(tens_digit-ones_digit))
+    else  :
+        score = 1
+    if score >= threshold :
+        return 0
+    else :
+        return num_rolls
+
     # END PROBLEM 10
 
 
 def sus_strategy(score, opponent_score, threshold=11, num_rolls=6):
     """This strategy returns 0 dice when your score would increase by at least threshold."""
     # BEGIN PROBLEM 11
-    return num_rolls  # Remove this line once implemented.
+    if (sus_update(0, score, opponent_score, dice=six_sided)-score) >= threshold :
+        num_rolls = 0
+    return num_rolls
     # END PROBLEM 11
 
 

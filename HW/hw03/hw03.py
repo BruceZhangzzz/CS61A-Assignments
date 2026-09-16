@@ -25,6 +25,13 @@ def num_eights(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n == 0:
+        return 0
+    if n % 10 == 8:
+        return 1 + num_eights(n//10)
+    else :
+        return num_eights(n//10)
+    
 
 
 def digit_distance(n):
@@ -47,6 +54,10 @@ def digit_distance(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if len(str(n)) == 1:    # if n < 10:是另一个base case 表达方式
+        return 0
+    else : 
+        return abs((n//10)%10-n%10)+digit_distance(n//10)
 
 
 def interleaved_sum(n, odd_func, even_func):
@@ -71,6 +82,16 @@ def interleaved_sum(n, odd_func, even_func):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(i, is_odd):
+        if i > n:
+            return 0
+        elif is_odd:
+            return odd_func(i) + helper(i+1, False)
+        elif not is_odd:
+            return even_func(i) + helper(i+1, True)
+    return helper(1, True)
+    
+    
 
 
 def next_smaller_dollar(bill):
@@ -107,6 +128,17 @@ def count_dollars(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(total, bill):
+        if total == 0:
+            return 1
+        if total < 0:
+            return 0
+        if bill == 1:
+            return 1
+        else: 
+            # 用当前bill或者不用当前bill两种情况
+            return helper(total-bill, bill) + helper(total, next_smaller_dollar(bill))
+    return helper(total, 100)
 
 
 def next_larger_dollar(bill):
@@ -143,6 +175,15 @@ def count_dollars_upward(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(total, bill):
+        if total == 0:
+            return 1
+        if bill is None:
+            return 0
+        if total < 0:
+            return 0
+        return helper(total, next_larger_dollar(bill)) + helper(total - bill, bill)
+    return helper(total, 1)
 
 
 def print_move(origin, destination):
